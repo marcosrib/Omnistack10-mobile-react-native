@@ -7,7 +7,7 @@ import { requestPermissionsAsync, getCurrentPositionAsync } from 'expo-location'
 import { MaterialIcons } from '@expo/vector-icons';
 
 import api from '../services/api';
-import { connect, disconnect } from '../services/socket';
+import { connect, disconnect, subcribeToNewDevs } from '../services/socket';
 
 export default function Main({ navigation }) {
 
@@ -35,13 +35,26 @@ export default function Main({ navigation }) {
         }
         loadInitialPosition();
     })
+    useEffect(() => {
+        subcribeToNewDevs(dev => {
+            console.warn('fkmfkm');
+            console.warn(dev);
+
+            setDevs([...devs, dev])
+        }
+        )
+
+    }, [devs])
     if (!currentRegion) {
         return null;
     }
 
     function setupWebsocket() {
+        disconnect();
+        console.warn('fkrmkmkkkm');
+        
         const { latitude, longitude } = currentRegion;
-        connect(latitude,longitude,devs);
+        connect(latitude, longitude, devs);
     }
     async function loadDevs() {
 
